@@ -1,0 +1,25 @@
+{
+    "id": "5bc758a40c4db13416c6348d",
+    "database": "core",
+    "collection": "pendingMatches",
+    "roles": [
+        {
+            "name": "default",
+            "apply_when": {},
+            "fields": {
+                "playerList": {}
+            },
+            "write": true,
+            "insert": true,
+            "delete": true,
+            "additional_fields": {}
+        }
+    ],
+    "schema": {
+        "properties": {
+            "_id": {
+                "bsonType": "objectId"
+            }
+        }
+    }
+}
