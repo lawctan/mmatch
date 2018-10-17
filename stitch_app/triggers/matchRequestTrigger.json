@@ -8,7 +8,7 @@
             "UPDATE"
         ],
         "database": "core",
-        "collection": "matchRequest",
+        "collection": "matchRequests",
         "service_name": "mongodb-atlas",
         "match": {},
         "full_document": true

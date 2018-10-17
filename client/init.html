@@ -19,18 +19,17 @@
       });
 
     function main() {
-      db.collection("players").insertOne({ _id: 1, skillLevel: 1 })
+      db.collection("players").insertOne({ _id: 1, skillLevel: 50 })
+      db.collection("players").insertOne({ _id: 2, skillLevel: 45 })
+      db.collection("players").insertOne({ _id: 3, skillLevel: 40 })
+      db.collection("players").insertOne({ _id: 4, skillLevel: 35 })
+      db.collection("players").insertOne({ _id: 5, skillLevel: 48 })
+      db.collection("players").insertOne({ _id: 6, skillLevel: 47 })
     }
     
   </script>
   </head>
   <body>
-    <h3>This is a great blog post</h3>
-    <div id="content">
-      I like to write about technology because I want to get on the
-      front page of hacker news.
-    </div>
-    <hr>
-    <div id="comments"></div>
+    <h3>Initialized players!</h3>
   </body>
 </html>
