@@ -2,6 +2,9 @@
   <head>
   <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.0.0/stitch.js"></script>
   <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const playerIdStr = urlParams.get('id');
+    const playerId = parseInt(playerIdStr)
     // Initialize the App Client
     const client = stitch.Stitch.initializeDefaultAppClient("mmatch-dpfhc");
     // Get a MongoDB Service Client
@@ -15,20 +18,49 @@
       .loginWithCredential(new stitch.AnonymousCredential())
       .catch(console.error)
       .then(()=>{
-        client.callFunction("getMatch", [{playerId:1}]).then(result => {
-            console.log(result) // Output: 7
-        });
+        main();
       });
+
+    function main() {
+      client.callFunction("matchRequest", [playerId]).then(result => {
+          console.log(result) // Output: 7
+          waitForMatch();
+      });
+    }
+
+    var counter = 1;
+
+    function waitForMatch() {
+      const intervalId = setInterval(() => {
+        client.callFunction("getMatch", [{playerId:playerId}]).then(result => {
+            console.log(result) // Output: 7
+            if (result.status === "failed") {
+              clearInterval(intervalId);
+              updateContent("Failed to find a match");
+            } else if (result.status === "ok") {
+              clearInterval(intervalId);
+              updateContent("Match ID: " + result.matchId);
+            }
+        });
+        updateTimer(counter++);
+      }, 1000);
+    }
+
+    function updateTimer(text) {
+      document.getElementById("timer").innerHTML = text;
+    }
+
+    function updateContent(text) {
+      document.getElementById("content").innerHTML = text;
+    }
     
   </script>
   </head>
   <body>
-    <h3>This is a great blog post</h3>
     <div id="content">
-      I like to write about technology because I want to get on the
-      front page of hacker news.
+       Finding Match...
     </div>
-    <hr>
-    <div id="comments"></div>
+    <div id="timer">
+    </div>
   </body>
 </html>

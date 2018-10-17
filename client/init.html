@@ -1,0 +1,36 @@
+<html>
+  <head>
+  <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.0.0/stitch.js"></script>
+  <script>
+    // Initialize the App Client
+    const client = stitch.Stitch.initializeDefaultAppClient("mmatch-dpfhc");
+    // Get a MongoDB Service Client
+    const mongodb = client.getServiceClient(
+      stitch.RemoteMongoClient.factory,
+      "mongodb-atlas"
+    );
+    // Get a reference to the blog database
+    const db = mongodb.db("core");
+    client.auth
+      .loginWithCredential(new stitch.AnonymousCredential())
+      .catch(console.error)
+      .then(()=>{
+        main();
+      });
+
+    function main() {
+      db.collection("players").insertOne({ _id: 1, skillLevel: 1 })
+    }
+    
+  </script>
+  </head>
+  <body>
+    <h3>This is a great blog post</h3>
+    <div id="content">
+      I like to write about technology because I want to get on the
+      front page of hacker news.
+    </div>
+    <hr>
+    <div id="comments"></div>
+  </body>
+</html>
