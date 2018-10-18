@@ -13,7 +13,7 @@ exports = async function(playerId){
   var matchRequests = db.collection("matchRequests");
   var doc = await matchRequests.updateOne(
     {"playerId": playerId}, 
-    {"playerId": playerId, "expiresAt": expiresAt, "timedOut": false, "matchId": null},
+    {$set: {"playerId": playerId, "expiresAt": expiresAt, "timedOut": false, "matchId": null}},
     {upsert: true});
 
   return doc.insertedId;

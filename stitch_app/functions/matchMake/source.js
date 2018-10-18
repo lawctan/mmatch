@@ -4,19 +4,18 @@ exports = async function(changeEvent) {
    If timeout changed to true, update(pendingMatch, $remove: {playerList: playerId})
    If new record inserted, check if can combine any matchRequest into a new/existing pendingMatch
  */
- const timedOutChange = changeEvent.operationType === "update" 
+  const timedOutChangeToTrue = changeEvent.operationType === "update" 
     && changeEvent.updateDescription.updatedFields.timedOut != undefined
-    && changeEvent.updateDescription.updatedFields.timedOut;
+    && changeEvent.updateDescription.updatedFields.timedOut === true;
   const newMatchRequest = changeEvent.operationType === "insert" || (changeEvent.operationType === "update" 
-    && changeEvent.updateDescription.updatedFields.expiresAt != undefined
-    && changeEvent.updateDescription.updatedFields.expiresAt);
+    && changeEvent.updateDescription.updatedFields.expiresAt != undefined);
  
- if (timedOutChange) {
+ if (timedOutChangeToTrue) {
    // get playerId from changed matchRequest doc
    var playerId = changeEvent.fullDocument.playerId;
    
    var collection = context.services.get("mongodb-atlas").db("core").collection("pendingMatches");
-   var result = await collection.updateOne({playerList: playerId}, {$pull: {playerList: playerId}});
+   var result = await collection.updateOne({"playerList._id": playerId}, {$pull: {playerList: {'_id':playerId}}});
    console.log("player " + playerId + " removed from " + result.modifiedCount + " match(es)");
    
    // clean up the pendingMatches that have an empty playerList
@@ -39,21 +38,17 @@ exports = async function(changeEvent) {
    
    var matchFound = false;
    for (var i = 0; i < pendingMatches.length && !matchFound; i++) {
-     var possibleMatch = true;
      var playersMatched = [];
+     var totalMatchSkill = 0;
      for (var j = 0; j < pendingMatches[i].playerList.length; j++) {
        var player = pendingMatches[i].playerList[j];
        console.log("assessing player " + player._id)
-       if (player.skillLevel - 20 > playerToMatch.skillLevel || player.skillLevel + 20 < playerToMatch.skillLevel) {
-         // not a good match for this player
-         possibleMatch = false;
-         break;
-       } else {
-         playersMatched.push(player._id);
-       }
+       totalMatchSkill += player.skillLevel;
+       playersMatched.push(player._id);
      }
      
-     if (possibleMatch) {
+     var averageMatchSkill = totalMatchSkill / pendingMatches[i].playerList.length;
+     if (playerToMatch.skillLevel >= averageMatchSkill - 5 && playerToMatch.skillLevel <= averageMatchSkill + 5) {
        // found a match!
        matchFound = true;
        
@@ -81,7 +76,6 @@ exports = async function(changeEvent) {
    
    if (!matchFound) {
      // need to create a new pendingMatch with just this player
-
      await db.collection("pendingMatches").insertOne({playerList: [playerToMatch]});
    }
  }
