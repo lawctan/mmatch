@@ -7,6 +7,9 @@
     const playerId = parseInt(playerIdStr)
     // Initialize the App Client
     const client = stitch.Stitch.initializeDefaultAppClient("mmatch-dpfhc");
+    // dev
+    //const client = stitch.Stitch.initializeDefaultAppClient("mmatch-uwlkq");
+    
     // Get a MongoDB Service Client
     const mongodb = client.getServiceClient(
       stitch.RemoteMongoClient.factory,
@@ -55,12 +58,36 @@
     }
     
   </script>
+  <style>
+    body {
+      font-size:100px;
+      text-align: center;
+    }
+
+    #playerDiv {
+      font-size: 70px;
+      color:blue;
+    }
+
+    #timer  {color: green;}
+  </style>
   </head>
   <body>
+    <div id="playerDiv">
+      PlayerID: <span id="playerId"></span>
+    </div>
     <div id="content">
        Finding Match...
     </div>
     <div id="timer">
     </div>
+    <script>
+      // self executing function here
+      (function() {
+         // your page initialization code here
+         // the DOM will be available here
+        document.getElementById("playerId").innerHTML = playerId;
+      })();
+    </script>
   </body>
 </html>

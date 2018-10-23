@@ -7,8 +7,7 @@ exports = async function(changeEvent) {
   const timedOutChangeToTrue = changeEvent.operationType === "update" 
     && changeEvent.updateDescription.updatedFields.timedOut != undefined
     && changeEvent.updateDescription.updatedFields.timedOut === true;
-  const newMatchRequest = changeEvent.operationType === "insert" || (changeEvent.operationType === "update" 
-    && changeEvent.updateDescription.updatedFields.expiresAt != undefined);
+  const newMatchRequest = changeEvent.operationType === "insert" || (changeEvent.operationType === "update" && changeEvent.updateDescription.updatedFields.expiresAt != undefined);
  
  if (timedOutChangeToTrue) {
    // get playerId from changed matchRequest doc

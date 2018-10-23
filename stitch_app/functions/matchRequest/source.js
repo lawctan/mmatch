@@ -1,6 +1,6 @@
 exports = async function(playerId){
 
-  const TIMEOUT = 60000;
+  const TIMEOUT = 40000;
   var now = new Date();
   var expiresAt = new Date(now.getTime() + TIMEOUT);
   const db = context.services.get("mongodb-atlas").db("core");
